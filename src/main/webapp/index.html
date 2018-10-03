@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>p01cs_casa</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+              crossorigin="anonymous">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+
+    </head>
+    <body>
+        <div class="container">
+            <h2>Ingrese 2 números y elija la operación a realizar</h2>
+            <!--<button type="button" name="enviar" value="Enviar" id="llenar" class="btn btn-success" >Enviar</button>-->
+            <form id="form">
+                <div id="divOp1" class="form-group">
+                    <label for="op1">Operando 1</label>
+                    <input id="op1" type="text" class="form-control" name="op1">
+                </div>	
+                <div id="divOp2" class="form-group">
+                    <label for="op2">Operando 2</label>
+                    <input id="op2" type="text" class="form-control" name="op2">
+                </div>
+                <div id="divOpr" class="form-group">
+                    <label for="operador">Seleccione operador</label>
+                    <select id="operador" class="select-list" name="operador">
+                        <option value="sum">Sumar</option>
+                        <option value="rest">Restar</option>
+                        <option value="mult">Multiplicar</option>
+                        <option value="div">Dividir</option>
+                    </select>
+
+                </div>
+
+                <input id="btnE" type="button" class="btn btn-primary" value="Enviar" name="enviar">
+                <input id="btnL" type="button" class="btn btn-primary" value="Limpiar" name="limpiar">
+
+            </form>
+            <hr>
+            <div id="alerta" class="alert alert-success"></div>
+            <div id="error" class="alert alert-danger" ></div>
+        </div>
+        <script>
+
+            function esReal(num) {
+                var exReg = /^-?\d+(\.\d+)?$/;
+                if (exReg.test(num)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            //console.log(esReal(1250.23));
+            $(document).ready(function () {
+                
+                $("#bntL").click(function(){
+                    $("#op1").val("");
+                    $("#op2").val("");
+                    $("#alerta").empty();
+                    $("#error").empty();
+                });
+
+                $("#btnE").click(function () {
+
+                    $.ajax({
+                        url: "/p02cs_calculadora/calculadora",
+                        cache: false,
+                        method: "get",
+                        data: $("#form").serialize(),
+                        dataType: "json",
+                        success: function (data) {
+
+                            $("#alerta").empty().append(data.resultado);
+                            $("#error").empty();
+                        },
+                        error: function (data) {
+                            var msj = "Mensaje del servidor: " + data.responseJSON.mensaje;
+
+                            $("#error").empty().append("Ha habido un error. Por favor, intentelo de nuevo</br>" + msj);
+                            $("#alerta").empty();
+                            //console.log(data.responseJSON.mensaje);
+                        }
+
+                    });
+                });
+
+
+
+
+
+
+            });
+
+        </script>
+    </body>
+</html>
